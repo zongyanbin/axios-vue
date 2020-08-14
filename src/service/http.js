@@ -1,70 +1,76 @@
 import axios from 'axios'
-import service from './contactApi'
+import service from './contactApi' //service 相当于 export default CONTACT_API
 import {Toast} from 'vant'
-
+//封装
 //service 循环遍历输出不同的请求方式    创建实例
 let instance = axios.create({
     baseURL:'http://localhost:9000/api',
     timeout:1000
 })
 
-const Http = {};//包裹请求方法的容器  创建对象
-//请求格式或参数
+const Http={} //创建一个请求方法对象  包裹请求方法得容器
+
+//请求格式或参数的统一
 for(let key in service){
-    let api = service[key];//url method
+    let api = service[key]//这里有url method
 
-
-    //asyncd 避免进入回调地狱
+    //async什么作用 避免进入回调地狱 await后面跟着是异步函数
    Http[key] = async function(
+        //声明async请求
+        //首先function里有参数，这几个参数要定义好，这个是要根据实际情况定义
+        //大家听完这个课程你要学会是如何封装一个适用于自己项目得方法，而不是讲完了直接拿着去用套用 这个是不对的
+        //每个项目需要封装也是有一定区别的 接下来我要封装几个参数
 
-    // demo实例
-    //    let res = null
-    //    try{
-    //         res = await axios.get('url') // //asyncd 避免进入回调地狱   then里得值
-    //      }catch(err){ //请求失败 err   catch
-    //         res=err
-    //      }
+        params, //请求get：url上默认值 ，如果是put post patch就用(data),如果是delete:url默认值
+        isFormData = false,//默认false 标识是否是form-data请求   主要作用给put post patch用的
+        config={}//默认空对象  axios请求用到都  （配置参数）
+        ){ 
+          
+            //开始第一步首先需要拿到请求Url
+           // let url = api.url
 
-     params,// 请求参数 get: url,put,patch(data),  delete:url
-     isFormData = false,//表示是否是form-data请求
-     config={} //配置参数    
+            //然后我在声明一个新的newParams  判断 isFormData  是否是formData请求 
+            //如果不是formData请求 newParams= params 
+            //如果是formData请求 需要处理转换成formdata对象
+            let newParams = {}
 
-   ){
-        // let = url = api.url
-        let newParams = {}
-        //content-type是否是form-data得判断
-        if(params && isFormData){
-            newParams = new FormData()
-            for(let i in params){
-                newParams.append(i,params[i])
+            //content-type 是否是form-data的判断 true得情况
+            if(params && isFormData){
+                newParams = new FormData()
+                for(let i in params){
+                    newParams.append(i,params[i])
+                }
+            }else{
+                newParams = params;
             }
-        }else{
-            newParams = params   
-        }
-        
-  
-        //不同请求都的判断
-        let response = {};//请求返回值
-    
-        if(api.method === 'put' || api.method === 'post' || api.method === 'patch'){
-           try{
-                response = await instance [api.method](api.url,newParams,config)
-           }catch(err){
-               response = err
-           }
-        }else if(api.method === 'delete' || api.method ==='get'){  //get请求
-            config.params = newParams
-            try{
-                response = await instance[api.method](api.url,config)
-               }catch(err){
-                   response = err
-               }
-        }
 
-        return response; //返回响应值
+            //第二步请求
+            //不同请求的判断  put   post  patch
+            let response = {}//请求的返回值
+            if(api.method =='put' || api.method==='post'|| api.method==='patch'){
+              
+                     try{
+                                //instance 请求方法第一个参数 api.method  接着是（）里第一个参数 url,第二个参数data，第三个参数config其他配置
+                        response = await instance[api.method](api.url,newParams,config)
+                     }catch(err){
+                        response = err
+                     }
+            }else if(api.method==='delete' || api.method=='get'){
 
-    }
+                    config.params = newParams
+                try{
+                     // delete 请求 instance 请求方法第一个参数 api.method  接着是（）里第一个参数 url ,第二个是config,没有第三个参数 
+                        response = await instance[api.method](api.url,config)
+                    }catch(err){
+                        response =err
+                    }
+
+            }
+
+            return response //返回响应值
+        }
 }
+
 
 //拦截器的添加  
 //请求拦截器
