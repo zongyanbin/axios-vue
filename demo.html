@@ -1,0 +1,95 @@
+<html>
+<head>
+<title></title>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+<!--下拉框-->
+<div id="app">
+    <select v-model="selected">
+      <option value="A被选">A</option>
+      <option value="B被选">B</option>
+      <option value="C被选">C</option>
+    </select>
+    <span>Selected: {{ selected }}</span>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        selected: ''
+      }
+    });
+  </script>
+   
+  <!--单选按钮-->
+  <div id="app1">
+    <input type="radio" id="small" value="small_value" v-model="picked">
+    <label for="small">small</label>
+    <br>
+    <input type="radio" id="big" value="big_value" v-model="picked">
+    <label for="big">big</label>
+    <br>
+    <span>Picked: {{ picked }}</span>
+  </div>
+ 
+  <script>
+    new Vue({
+      el: '#app1',
+      data: {
+        picked: ''
+      }
+    })
+  </script>
+   
+  <!--复选框-->
+  <div id="app2">
+    <input type="checkbox" id="one" value="value_one" v-model.lazy="checkedNames">
+    <label for="one">选项一</label>
+    <input type="checkbox" id="two" value="value_two" v-model.lazy="checkedNames">
+    <label for="two">选项二</label>
+    <input type="checkbox" id="three" value="value_three" v-model.lazy="checkedNames">
+    <label for="three">选项三</label>
+    <br>
+    <span>Checked names: {{ checkedNames }}</span>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app2',
+      data: {
+        checkedNames: []
+      }
+    })
+  </script>
+
+<div id="app3">
+<input type="text" name="titlea" value="" v-model.trim="titlea" id="app3">
+<span>input names: {{ titlea }}</span>
+</div>
+<script>
+     new Vue({
+         el:'#app3',
+         data:{
+             titlea:'234234'
+         }
+     })
+
+     new Vue({
+         el:'#app4',
+         data:{
+             usename:'',
+             age:'',
+         }
+     })
+</script>
+  <div id="app4">
+      <input type="text" name="" name="usename" v-model="usename">
+      <input type="text" name="" name="age" v-model="age">
+      {{usename}}是{{agx}}
+  </div>
+
+</body>
+</html>
