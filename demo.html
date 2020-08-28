@@ -16,6 +16,7 @@
   </div>
 
   <script>
+    //下拉框
     new Vue({
       el: '#app',
       data: {
@@ -36,6 +37,7 @@
   </div>
  
   <script>
+    //单选按钮
     new Vue({
       el: '#app1',
       data: {
@@ -56,20 +58,84 @@
     <span>Checked names: {{ checkedNames }}</span>
   </div>
 
-  <script>
+<script>
+  //复选框
     new Vue({
       el: '#app2',
       data: {
-        checkedNames: []
+        checkedNames: ['value_one'] //设置默认值
       }
     })
   </script>
 
+
 <div id="app3">
-<input type="text" name="titlea" value="" v-model.trim="titlea" id="app3">
+<input type="text" name="titlea" value="" v-model.trim="titlea">
 <span>input names: {{ titlea }}</span>
 </div>
+
+
+<div id="app4">
+  <input type="text" name="" name="usename" v-model="username">
+  <input type="text" name="" name="age" v-model="age">
+  {{ username }}是{{ age }}
+<br>
+  <textarea v-model="info"></textarea><br>
+  <div>{{info}}</div>
+
+  <button type="button" @click="submit()">提交</button>
+</div>
+
+<div id="app5">
+  <ul>
+      <li v-for="(list,l_v) in lists" :key="l_v">
+      {{list.username}}
+  </ul>
+</div> 
+
+<ul id="example-1">
+  <li v-for="v in items" :key="v.message">
+    {{ v.message }}
+  </li>
+
+  <li v-for="(list,key) in object">
+    {{key}}-{{list}}
+  </li>
+</ul>
+
+<div id="app6">
+  <button v-on:click="count+=1">{{count}}</button>
+  <button v-on:click="greet">{{count}}</button>
+</div>
 <script>
+
+
+//时间绑定
+new Vue({
+  el:'#app6',
+  data:{
+    count:0
+  },
+  methods:{
+    greet:function(){
+      this.count+=1
+    }
+  }
+})
+new Vue({
+  el: '#example-1',
+  data: {
+    items: [
+      { message: 'Foo' },
+      { message: 'Bar' }
+    ],
+    object:{
+      name:'xiaosan',
+      sex:'男',
+      age:28
+    }
+  }
+})
      new Vue({
          el:'#app3',
          data:{
@@ -80,16 +146,87 @@
      new Vue({
          el:'#app4',
          data:{
-             usename:'',
+             username:'',
              age:'',
+             info:''
+         },
+         methods:{
+           submit:function(){
+            var postObj= {
+             xm:this.username,
+             nl:this.age,
+             jj:this.info
+            }
+            console.log(postObj)
+           }
          }
      })
-</script>
-  <div id="app4">
-      <input type="text" name="" name="usename" v-model="usename">
-      <input type="text" name="" name="age" v-model="age">
-      {{usename}}是{{agx}}
-  </div>
 
+     new Vue({
+       el:'#app5',
+       data:{
+         lists:[
+              {username:'张三'},
+              {username:'李四'},
+              {username:'王五'}        
+         ]
+       }
+     })
+
+     new Vue({
+       el:'#app6',
+       data:{
+         list:[
+           {username:'123'}
+         ]
+       }
+     })
+</script>
+<!--创建组件-->
+<div id="app_zujian">323
+    <button-counter title="我叫张三:" v-on:clicknow="clicknow">
+
+      <h1>123</h1>
+    </button-counter>
+    <button-counter title="我要李四:"></button-counter>
+    <test></test>
+</div>
+<script>
+  //全局注册
+  Vue.component('button-counter',{
+    props:['title'],
+    data:function(){
+      return {
+        count:0
+      }
+    },
+    template:'<div><button v-on:click="clickfun">{{title}} you click me {{ count }} times.</button><slot></slot></div>', //slot 插槽 插入Html 
+    methods:{
+      clickfun:function(){
+        this.count++;
+        this.$emit('clicknow',this.count);
+      }
+    }
+  })
+
+  var vm = new Vue({
+    el:'#app_zujian',
+    data:{
+
+    },
+    methods:{
+      clicknow:function(e){
+        console.log(e)
+      }
+    },
+    components:{  //局部注册
+        test:{
+          template:"<h2>aaa</h2>"
+        }
+    }
+
+   
+  })
+</script> 
 </body>
 </html>
